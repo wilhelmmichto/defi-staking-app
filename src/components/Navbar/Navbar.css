@@ -1,0 +1,47 @@
+.nav{
+    background-color: black;
+    height: 50px;
+    width: 100%;
+    position:fixed;
+    top:0;
+    display: flex;
+    align-items: center;
+
+    
+    
+    }
+.navleft{
+    flex: 5;
+    width: 100px;
+
+    
+
+    }
+
+.centernav{
+        flex:6;
+        
+    }
+.navright{
+    flex:5;
+    width: 100px;
+    margin-top: 10px;
+    
+
+    
+}
+
+
+.navimg{
+    width: 50px;
+    height: 30px;
+    margin: 10px 10px 10px 10px;
+    }
+
+.navheading{
+    color: aliceblue;
+}
+
+.navul{
+list-style: none;
+}
