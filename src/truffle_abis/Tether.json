@@ -224,7 +224,7 @@
   "sourceMap": "25:1802:3:-;;;48:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;95:30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;154:25;132:47;;223:2;206:19;;;;;;;;;;;;;;;;;;;;596:76;8:9:-1;5:2;;;30:1;27;20:12;5:2;596:76:3;653:11;;629:9;:21;639:10;629:21;;;;;;;;;;;;;;;:35;;;;25:1802;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
   "deployedSourceMap": "25:1802:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:1802:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;48:40;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;48:40:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1125:215;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1125:215:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;1350:474;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1350:474:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;470:44;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;470:44:3;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;95:30;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;95:30:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;680:435;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;680:435:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;523:64;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;523:64:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;48:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;1125:215::-;1192:12;1250:6;1216:9;:21;1226:10;1216:21;;;;;;;;;;;;;;;:31;1238:8;1216:31;;;;;;;;;;;;;;;:40;;;;1293:8;1272:38;;1281:10;1272:38;;;1303:6;1272:38;;;;;;;;;;;;;;;;;;1328:4;1321:11;;1125:215;;;;:::o;1350:474::-;1432:12;1474:9;:16;1484:5;1474:16;;;;;;;;;;;;;;;;1464:6;:26;;1456:35;;;;;;1520:9;:16;1530:5;1520:16;;;;;;;;;;;;;;;:28;1537:10;1520:28;;;;;;;;;;;;;;;;1510:6;:38;;1502:47;;;;;;1608:6;1590:9;:14;1600:3;1590:14;;;;;;;;;;;;;;;;:24;;;;;;;;;;;1696:6;1676:9;:16;1686:5;1676:16;;;;;;;;;;;;;;;;:26;;;;;;;;;;;1744:6;1713:9;:21;1723:10;1713:21;;;;;;;;;;;;;;;:28;1735:5;1713:28;;;;;;;;;;;;;;;;:37;;;;;;;;;;;1782:3;1766:28;;1775:5;1766:28;;;1787:6;1766:28;;;;;;;;;;;;;;;;;;1812:4;1805:11;;1350:474;;;;;:::o;470:44::-;;;;;;;;;;;;;;;;;:::o;95:30::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;680:435::-;740:12;867:6;841:9;:21;851:10;841:21;;;;;;;;;;;;;;;;:32;;833:41;;;;;;967:6;942:9;:21;952:10;942:21;;;;;;;;;;;;;;;;:31;;;;;;;;;;;1030:6;1012:9;:14;1022:3;1012:14;;;;;;;;;;;;;;;;:24;;;;;;;;;;;1073:3;1052:33;;1061:10;1052:33;;;1078:6;1052:33;;;;;;;;;;;;;;;;;;1103:4;1096:11;;680:435;;;;:::o;523:64::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "pragma solidity ^0.5.0;\r\ncontract Tether {\r\n    string public name = \"Mock Tether Token\";\r\n    string public symbol = \"mUSDT\";\r\n    uint256 totalSupply = 1000000000000000000000000; // 1 million tokens\r\n    uint8 decimals = 18;\r\n\r\n\r\n    event Transfer(\r\n        address indexed _from,\r\n        address indexed _to,\r\n        uint _value\r\n    );\r\n\r\n    event Approval(\r\n        address indexed _owner,\r\n        address indexed _spender,\r\n        uint _value\r\n    );\r\n\r\n    mapping(address => uint256) public balanceOf;\r\n\r\n    mapping(address => mapping(address => uint256)) public allowance;\r\n\r\n    constructor () public {\r\n        balanceOf[msg.sender] = totalSupply;\r\n    }\r\n\r\n    function transfer(address _to, uint _value) public returns (bool success) {\r\n        // require that the value is greater or equal for transfer\r\n        require(balanceOf[msg.sender] >=  _value);\r\n        // transfer the amount and subtract the balance\r\n        balanceOf[msg.sender] -= _value;\r\n        // add the balance\r\n        balanceOf[_to] += _value;\r\n        emit Transfer(msg.sender, _to, _value);\r\n        return true;\r\n    }\r\n\r\n\r\n    function approve(address _spender, uint256 _value) public returns (bool success){\r\n        allowance[msg.sender][_spender] = _value;\r\n        emit Approval(msg.sender, _spender, _value);\r\n        return true;\r\n    }\r\n\r\n\r\n    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success){\r\n        require(_value <= balanceOf[_from]);\r\n        require(_value <= allowance[_from][msg.sender]);\r\n\r\n        // add the balance\r\n        balanceOf[_to] += _value;\r\n        // subtract the balance from transferFrom\r\n        balanceOf[_from] -= _value;\r\n        allowance[msg.sender][_from]-= _value;\r\n        emit Transfer(_from, _to, _value);\r\n        return true;\r\n    }\r\n}",
-  "sourcePath": "D:\\dapp\\defi-staking-app-starter\\defi-staking-app-starter\\src\\contracts\\Tether.sol",
+  "sourcePath": "D:\\dapp\\defi-staking-app-starter\\defi-staking-app\\src\\contracts\\Tether.sol",
   "ast": {
     "absolutePath": "project:/src/contracts/Tether.sol",
     "exportedSymbols": {
@@ -5050,6 +5050,63 @@
     "version": "0.5.17+commit.d19bba13.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x1835bd508669D2DD45b52bcA4aaD582AE72c1807",
+      "transactionHash": "0xc4358b4f05e5f128c69f79aca952a6e8a1df1bed8e224991179479ceecd255c2"
+    },
     "5777": {
       "events": {
         "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
@@ -5104,12 +5161,12 @@
         }
       },
       "links": {},
-      "address": "0x0939f698474D8bD648e84aCC5a627214ba877858",
-      "transactionHash": "0xf48285bee608a4484e1c6020f07b699fa19e490fe18761332c91badbaf94eaeb"
+      "address": "0xaE49Aa76Fe5c268907bF34efeAeB1938bE9Ed35F",
+      "transactionHash": "0xa3d6d21da1367d82c4b96bc2f6caae59da978f88a5ebb535e281dac89873da50"
     }
   },
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-09T21:34:37.026Z",
+  "updatedAt": "2022-04-29T11:03:53.428Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

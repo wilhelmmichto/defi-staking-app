@@ -29,7 +29,6 @@ class App extends Component {
     const account = await web3.eth.getAccounts();
     this.setState({ account: account[0] });
     const networkId = await web3.eth.net.getId();
-
     // Load Tether Contracts
     const tetherData = Tether.networks[networkId];
     if (tetherData) {
@@ -67,7 +66,7 @@ class App extends Component {
         .call();
       this.setState({ stakingBalance: stakingBalance.toString() });
     } else {
-      window.alert("Decentral Bank not deployed to the network");
+      window.alert("Decentral Bank not deployed to the network. Try Ropsten Network!");
     }
 
     this.setState({ loading: false });
